@@ -7,6 +7,16 @@ void process_command(std::string command) {
     if (command == "exit")
         exit(0);
 
+    if (command == "pwd") {
+        char cwd[1024];
+        if (getcwd(cwd, sizeof(cwd)) != NULL) { // get current working directory == getcwd
+            std::cout << cwd << std::endl;
+        } else {
+            std::cerr << "Error obtaining the current working directory" << std::endl;
+        }
+        return; // return to avoid duplicate out
+    }
+    
     // Se for comando externo
 
     // * necessário verificar se é para ser executado em background
