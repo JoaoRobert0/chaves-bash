@@ -16,7 +16,7 @@ void process_command(std::string command) {
         }
         return; // return to avoid duplicate out
     }
-    
+
     // Se for comando externo
 
     // * necessário verificar se é para ser executado em background
@@ -49,7 +49,9 @@ void process_command(std::string command) {
 
 int main() {
     while (true) {
-        std::cout << "$> ";
+        char cwd[1024];
+        getcwd(cwd, sizeof(cwd));
+        std::cout << cwd <<"$ ";
         std::string command;
         getline(std::cin, command);
         process_command(command);
