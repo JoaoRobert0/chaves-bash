@@ -1,9 +1,15 @@
 #include <iostream>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <vector>
+#include <sstream>
+
+std::vector<std::string> history;
 
 void process_command(std::string command) {
-    // Se for comando interno...
+    history.push_back(command);
+
+    // INTERNAL COMMANDS
     if (command == "exit")
         exit(0);
 
@@ -17,7 +23,37 @@ void process_command(std::string command) {
         return; // return to avoid duplicate out
     }
 
-    // Se for comando externo
+    std::string args[8];
+    std::istringstream iss(command);
+    std::string element;
+    char split = ' ';
+
+    int counter = 0;
+    while (std::getline(iss, element, split))
+    {
+        args[counter] = element;
+        counter++; 
+    }
+    
+    if (args[0] == "cd") {
+        if (counter < 2) {
+            // Missing argument for cd
+            std::cerr << "cd: missing argument" << std::endl;
+            return;
+        }
+
+        // The directory to change to is the second argument
+        const std::string& directory = args[1];
+
+        if (chdir(directory.c_str()) != 0) {
+            // Failed to change directory
+            std::cerr << "cd: no such file or directory: " << directory << std::endl;
+        }
+        return; // Return after changing the directory
+    }
+
+
+    // EXTERNAL COMMANDS
 
     // * necessário verificar se é para ser executado em background
     /*  Se for caminho relativo, procurar o comando na lista de diretórios
